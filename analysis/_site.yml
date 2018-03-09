@@ -13,12 +13,17 @@ navbar:
       href: license.html
   right:
     - icon: fa-github
-      href: https://github.com/jdblischak/workflowr
+      href: https://github.com/ck2136/
+    - icon: fa-linkedin-square 
+      href: https://www.linkedin.com/in/chonggg511/
+    - icon: fa-home
+      href: http://www.pharmacoecon.me/
+    
 output:
   html_document:
     toc: true
     toc_float: true
-    theme: cosmo
+    theme: journal
     highlight: textmate
     include:
       before_body: include/header.html
