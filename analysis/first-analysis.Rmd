@@ -1,0 +1,128 @@
+---
+title: "Exploratory Analysis"
+author: "Chong H Kim"
+date: YYYY-MM-DD
+output: html_document
+---
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE, cache=FALSE}
+knitr::read_chunk("chunks.R")
+```
+
+<!-- Update knitr chunk options -->
+```{r knitr-opts-chunk, include=FALSE}
+```
+
+<!-- Insert the date the file was last updated -->
+```{r last-updated, echo=FALSE, results='asis'}
+```
+
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+```{r code-version, echo=FALSE, results='asis'}
+```
+
+<!-- Add your analysis here -->
+
+# Exploratory Analysis
+
+## Loading Data
+
+The data that we'll be using for this example workflowr project is ttp patients from University of Alabama Birmingham. We'll start from using the raw data. We're going to use the `readxl` package. Let's take a look at what a few of the column names look like.
+
+```{r load_dat}
+# load data 
+library(readxl)
+ttprawdat <- read_xlsx("~/Documents/Projects/Huy/ttp_pm/data/TTP Database only labREV_LS 1242018-HP.xlsx", sheet =  1)
+colnames(ttprawdat)[1:5]
+```
+
+As you can see... they are not the prettiest variable names for data analysis (i.e. they are not short). Extremely human readable though. So we need to do some data management to make it easy for us to do analysis later on. First, we're going to select only those columns that we're going to use for analysis. In this case we will be filtering patients that have the column `TPE( 1) ... = 1`. Additionally, duplicate subjects are recorded beyond `Serial # > 91` so we need to select those before 92. Lastly we need to select only the variables that we'll be working with. In this case the autocomplete functionality of Rstudio really comes in handy as all we need to do is write a few of the alphabet and let the tab key figure out which variables we want. 
+
+```{r change_name}
+## Identify outcome columns
+library(dplyr)
+ttpselected <- ttprawdat %>%
+  # exclude patients with value of 2nd column as 1 
+  filter(`TPE( 1), plasma (P) and platelet (PP) prior to sample collection` != 1) %>%
+  # rows 93 to 102 are duplicate values so for now exclude those people
+  filter(`Serial #` < 92) %>%
+  # select variables to use
+  select(Age, `Sex ( F=1, M=0)`, `Race (W/AA)`, `ABO type`, `CNS Sign/Symps (1/0)`, `Abd pain (1/0)`, `Chest pain (1/0)`, `Disease 1`, HTN, DM, Preg, Neoplasia, HIV, HSV, HCV, SLE, Transplant, Smoking, `Rec Drugs`, `Time to plt stabilization`, pltstab7, LOSthis, outcome1, mort, wbc, Neutrophil, culture, hb, hct, plt, ldh, cr, pt, ptt, fibr, ddimer, protein, alb, tbili, ibili,  trop, inhibitor, A13Igg, hnp, histone, pai, vwfag, VWFCBA, activevwf, VWFRatio, ic3b, c59, c4d, bb, vincristineTHIS, CyclophosphamideTHIS, `rituxan this`, `eculizumab this`, `bortezomib-this`) 
+```
+
+We need to change the column names as we mentioned earlier:
+
+```{r exp_change_col_names}
+
+colnames(ttpselected) <- c("age","sex","race","btype","cmb_cns","cmb_abd","cmb_chst","disease","htn","dm","preg","neoplasia","hiv","hsv","hcv","sle","transplant","smoking","rec_drug","time_plt_stbl","plt_stb_7", "los" ,"outcome1","mort","sbc","neutrophil","culture","hb","hct","plt","ldh","cr","pt","ptt","fibr","ddimer","protein","alb","tbili","ibili","trop","inhib", "a13igg","hnp","histone","pai","vwfag","vwfcba","activevwf","vwfratio","ic3b","c59","c4d","bb","vincristine","cyclophosphamide","rituxan","eculizumab","bortezomib")
+```
+
+And finally we need to convert some of the variable from factor to numeric or character (this will be handy when we run the machine learning algorithms.)
+
+```{r exp_chg_vartypes}
+
+colnames(ttpselected) <- c("age","sex","race","btype","cmb_cns","cmb_abd","cmb_chst","disease","htn","dm","preg","neoplasia","hiv","hsv","hcv","sle","transplant","smoking","rec_drug","time_plt_stbl","plt_stb_7", "los" ,"outcome1","mort","sbc","neutrophil","culture","hb","hct","plt","ldh","cr","pt","ptt","fibr","ddimer","protein","alb","tbili","ibili","trop","inhib", "a13igg","hnp","histone","pai","vwfag","vwfcba","activevwf","vwfratio","ic3b","c59","c4d","bb","vincristine","cyclophosphamide","rituxan","eculizumab","bortezomib")
+
+# change variable type (i.e. from character to numeric and etc)
+ttpselected <- ttpselected %>%
+  # change certain variables
+  mutate_at(., .vars = c("time_plt_stbl", "ptt","protein", "alb", "trop", "inhib", "rituxan", "ddimer","sbc","neutrophil", "outcome1"), .funs=as.numeric ) %>%
+  # Mutate at variables
+  mutate_at(., .vars = c("sex","race","btype","cmb_cns","cmb_abd","cmb_chst","disease","htn","dm","preg","neoplasia","hiv","hsv","hcv","sle","transplant","smoking","rec_drug","outcome1","mort","culture", "vincristine","cyclophosphamide","rituxan","eculizumab","bortezomib"), .funs = as.character) %>%
+  # create outcome2 based on whether or not outcome 1 is > 0
+  mutate(outcome2 = as.character(ifelse(outcome1 > 0, 1, 0))) %>%
+  # to add survival interpretation
+  mutate(time = ifelse(is.na(time_plt_stbl), los, time_plt_stbl),
+         status = ifelse(!is.na(time_plt_stbl), 1, 0))
+```
+
+Although not standard practice, we're going to create a variable that houses all categorical analogs of the previous data (which has biomarkers measured as continuous variables). 
+
+```{r exp_dm_catdata}
+# To create data for categorical variables...
+ttpselectedcat <- ttprawdat %>%
+  # exclude patients with value of 2nd column as 1 
+  filter(`TPE( 1), plasma (P) and platelet (PP) prior to sample collection` != 1) %>%
+  # rows 93 to 102 are duplicate values so for now exclude those people
+  filter(`Serial #` < 92) %>%
+  # select variables to use
+  dplyr::select(Age, `Sex ( F=1, M=0)`, `Race (W/AA)`, `ABO type`, `CNS Sign/Symps (1/0)`, `Abd pain (1/0)`, `Chest pain (1/0)`, `Disease 1`, HTN, DM, Preg, Neoplasia, HIV, HSV, HCV, SLE, Transplant, Smoking, `Rec Drugs`, `Time to plt stabilization`, pltstab7, LOSthis, outcome1, mort, wbc, Neutrophil, culture, hb, hct, plt, ldh, cr, pt, ptt, fibr, ddimer, protein, alb, tbili, ibili, `Low Haptoglobin (1/0)`, `Trop (nml <0.04; nml = 1; high = 2`, `HNP Hi =1; Low =2 (Range 1.8-13.7)`, `histone (hi=1; low=2; range 0.15-6.912)`, `PAI (Hi=1; low = 2) Range 53.3-2160`, `Vwf Ag (%?) Hi=1; low = 2 range 59-273.5`, `Vwf CBA (%?) Hi=1; low = 2 range (45.95-286)`, `Active VwF Hi=1; low = 2 range (44.21-187.9)`, `Vwf Ratio Hi=1; low = 2 range (0.55-2.94)`, `ic3b Hi=1; low = 2 range (6.06-15.7)`, `C5-9 Hi=1; low = 2 range (0.2-2.7)`, `C4d Hi=1; low = 2 range (1.4-4.1)`, `Bb Hi=1; low = 2 range (0.8-1.1)`, vincristineTHIS, CyclophosphamideTHIS, `rituxan this`, `eculizumab this`, `bortezomib-this`) 
+
+
+colnames(ttpselectedcat) <- c("age","sex","race","btype","cmb_cns","cmb_abd","cmb_chst","disease","htn","dm","preg","neoplasia","hiv","hsv","hcv","sle","transplant","smoking","rec_drug","time_plt_stbl","plt_stb_7","los", "outcome1","mort","sbc","neutrophil","culture","hb","hct","plt","ldh","cr","pt","ptt","fibr","ddimer","protein","alb","tbili","ibili","trop","inhib","hnp","histone","pai","vwfag","vwfcba","activevwf","vwfratio","ic3b","c59","c4d","bb","vincristine","cyclophosphamide","rituxan","eculizumab","bortezomib")
+
+# change variable type (i.e. from character to numeric and etc)
+ttpselectedcat <- ttpselectedcat %>%
+  # change certain variables
+  mutate_at(., .vars = c("time_plt_stbl", "ptt","protein", "alb", "inhib", "rituxan", "ddimer","sbc","neutrophil", "outcome1"), .funs=as.numeric )  %>%
+  # create outcome2 based on whether or not outcome 1 is > 0
+  mutate(outcome2 = as.character(ifelse(outcome1 > 0, 1, 0))) %>%
+  mutate_at(., .vars = c("trop","hnp","histone","pai","vwfag","vwfcba","activevwf","vwfratio","ic3b","c59","c4d","bb"),
+            .funs = funs(ifelse(. == 2, 0, ifelse(. == 0, 1, 2)))) %>%
+  # Mutate at variables
+  mutate_at(., .vars = c("trop","hnp","histone","pai","vwfag","vwfcba","activevwf","vwfratio","ic3b","c59","c4d","bb"), .funs = as.character)%>%
+  # to add survival interpretation
+  mutate(time = ifelse(is.na(time_plt_stbl), los, time_plt_stbl),
+         status = ifelse(!is.na(time_plt_stbl), 1, 0))
+```
+
+## Data Explore
+
+Now we can do some data exploring using the `DataExplorer` package.
+
+```{r data_explorer}
+library(DataExplorer)
+DataExplorer::plot_str(ttpselected)
+```
+
+We can see that we have some continuous and categorical variables.
+
+## Session information
+
+<!-- Insert the session information into the document -->
+```{r session-info}
+sessionInfo()
+```

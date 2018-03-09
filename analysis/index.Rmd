@@ -2,7 +2,15 @@
 title: "Home"
 output:
   html_document:
-    toc: false
+    toc: true
 ---
 
-Welcome to my research website.
+Welcome to the research project "TTP Prediction" website.
+
+# Introduction
+
+This project is based on TTP patients from the University of Alabama Birmingham. The objective is to determine markers that may predict future outcomes (e.g. mortality, exacerbations, relapse, and remission). 
+
+# Contents
+
+**Exploratory Analysis : ** Click on this [link](first-analysis.html) to see the data management and exploratory analysis.
