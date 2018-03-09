@@ -113,7 +113,7 @@ ttpselectedcat <- ttpselectedcat %>%
 
 Now we can do some data exploring using the `DataExplorer` package.
 
-```{r data_explorer}
+```{r plot_data}
 library(DataExplorer)
 DataExplorer::plot_str(ttpselected)
 ```
