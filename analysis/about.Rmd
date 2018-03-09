@@ -5,4 +5,18 @@ output:
     toc: false
 ---
 
-Describe your project.
+# About: Project 
+
+This project is based on TTP patients from the University of Alabama Birmingham. The objective is to determine markers that may predict future outcomes (e.g. mortality, exacerbations, relapse, and remission). Click  [here](first-analysis.html) to see the data management and exploratory analysis.
+
+# About: Authors
+
+## Chong Kim
+
+Hi there. I'm a PhD candidate at the University of Colorado Anschutz Medical Campus in the School of Pharmacy & Pharmaceutical Sciences. The broad domain of research I'm interested in is pharmacoeconomics, pharmacoepidemiology, and biostatistics. This project has to do a lot with pharmacoepidemiology, biostatistics, and machine learning. Hopefully I'll be able to utilize principles I've learned throughout my coursework to determine if there are any interesting patterns among TTP patients.
+
+## Dr. Huy Phu Pham
+
+
+
+**Exploratory Analysis : ** 

@@ -2,7 +2,7 @@
 title: "Home"
 output:
   html_document:
-    toc: true
+    toc: false
 ---
 
 Welcome to the research project "TTP Prediction" website.
