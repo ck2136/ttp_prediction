@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Chong H Kim" />
+
+
+<title>Exploratory Analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ttp_prediction</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jdblischak/workflowr">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Exploratory Analysis</h1>
+<h4 class="author"><em>Chong H Kim</em></h4>
+<h4 class="date"><em>YYYY-MM-DD</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2018-03-09</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> 88319d7</p>
+<!-- Add your analysis here -->
+<div id="exploratory-analysis" class="section level1">
+<h1>Exploratory Analysis</h1>
+<div id="loading-data" class="section level2">
+<h2>Loading Data</h2>
+<p>The data that we’ll be using for this example workflowr project is ttp patients from University of Alabama Birmingham. We’ll start from using the raw data. We’re going to use the <code>readxl</code> package. Let’s take a look at what a few of the column names look like.</p>
+<pre class="r"><code># load data 
+library(readxl)
+ttprawdat &lt;- read_xlsx(&quot;~/Documents/Projects/Huy/ttp_pm/data/TTP Database only labREV_LS 1242018-HP.xlsx&quot;, sheet =  1)
+colnames(ttprawdat)[1:5]</code></pre>
+<pre><code>[1] &quot;Serial #&quot;                                                        
+[2] &quot;TPE( 1), plasma (P) and platelet (PP) prior to sample collection&quot;
+[3] &quot;Age&quot;                                                             
+[4] &quot;Sex ( F=1, M=0)&quot;                                                 
+[5] &quot;Race (W/AA)&quot;                                                     </code></pre>
+<p>As you can see… they are not the prettiest variable names for data analysis (i.e. they are not short). Extremely human readable though. So we need to do some data management to make it easy for us to do analysis later on. First, we’re going to select only those columns that we’re going to use for analysis. In this case we will be filtering patients that have the column <code>TPE( 1) ... = 1</code>. Additionally, duplicate subjects are recorded beyond <code>Serial # &gt; 91</code> so we need to select those before 92. Lastly we need to select only the variables that we’ll be working with. In this case the autocomplete functionality of Rstudio really comes in handy as all we need to do is write a few of the alphabet and let the tab key figure out which variables we want.</p>
+<pre class="r"><code>## Identify outcome columns
+library(dplyr)</code></pre>
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>ttpselected &lt;- ttprawdat %&gt;%
+  # exclude patients with value of 2nd column as 1 
+  filter(`TPE( 1), plasma (P) and platelet (PP) prior to sample collection` != 1) %&gt;%
+  # rows 93 to 102 are duplicate values so for now exclude those people
+  filter(`Serial #` &lt; 92) %&gt;%
+  # select variables to use
+  select(Age, `Sex ( F=1, M=0)`, `Race (W/AA)`, `ABO type`, `CNS Sign/Symps (1/0)`, `Abd pain (1/0)`, `Chest pain (1/0)`, `Disease 1`, HTN, DM, Preg, Neoplasia, HIV, HSV, HCV, SLE, Transplant, Smoking, `Rec Drugs`, `Time to plt stabilization`, pltstab7, LOSthis, outcome1, mort, wbc, Neutrophil, culture, hb, hct, plt, ldh, cr, pt, ptt, fibr, ddimer, protein, alb, tbili, ibili,  trop, inhibitor, A13Igg, hnp, histone, pai, vwfag, VWFCBA, activevwf, VWFRatio, ic3b, c59, c4d, bb, vincristineTHIS, CyclophosphamideTHIS, `rituxan this`, `eculizumab this`, `bortezomib-this`) </code></pre>
+<p>We need to change the column names as we mentioned earlier:</p>
+<pre class="r"><code>colnames(ttpselected) &lt;- c(&quot;age&quot;,&quot;sex&quot;,&quot;race&quot;,&quot;btype&quot;,&quot;cmb_cns&quot;,&quot;cmb_abd&quot;,&quot;cmb_chst&quot;,&quot;disease&quot;,&quot;htn&quot;,&quot;dm&quot;,&quot;preg&quot;,&quot;neoplasia&quot;,&quot;hiv&quot;,&quot;hsv&quot;,&quot;hcv&quot;,&quot;sle&quot;,&quot;transplant&quot;,&quot;smoking&quot;,&quot;rec_drug&quot;,&quot;time_plt_stbl&quot;,&quot;plt_stb_7&quot;, &quot;los&quot; ,&quot;outcome1&quot;,&quot;mort&quot;,&quot;sbc&quot;,&quot;neutrophil&quot;,&quot;culture&quot;,&quot;hb&quot;,&quot;hct&quot;,&quot;plt&quot;,&quot;ldh&quot;,&quot;cr&quot;,&quot;pt&quot;,&quot;ptt&quot;,&quot;fibr&quot;,&quot;ddimer&quot;,&quot;protein&quot;,&quot;alb&quot;,&quot;tbili&quot;,&quot;ibili&quot;,&quot;trop&quot;,&quot;inhib&quot;, &quot;a13igg&quot;,&quot;hnp&quot;,&quot;histone&quot;,&quot;pai&quot;,&quot;vwfag&quot;,&quot;vwfcba&quot;,&quot;activevwf&quot;,&quot;vwfratio&quot;,&quot;ic3b&quot;,&quot;c59&quot;,&quot;c4d&quot;,&quot;bb&quot;,&quot;vincristine&quot;,&quot;cyclophosphamide&quot;,&quot;rituxan&quot;,&quot;eculizumab&quot;,&quot;bortezomib&quot;)</code></pre>
+<p>And finally we need to convert some of the variable from factor to numeric or character (this will be handy when we run the machine learning algorithms.)</p>
+<pre class="r"><code>colnames(ttpselected) &lt;- c(&quot;age&quot;,&quot;sex&quot;,&quot;race&quot;,&quot;btype&quot;,&quot;cmb_cns&quot;,&quot;cmb_abd&quot;,&quot;cmb_chst&quot;,&quot;disease&quot;,&quot;htn&quot;,&quot;dm&quot;,&quot;preg&quot;,&quot;neoplasia&quot;,&quot;hiv&quot;,&quot;hsv&quot;,&quot;hcv&quot;,&quot;sle&quot;,&quot;transplant&quot;,&quot;smoking&quot;,&quot;rec_drug&quot;,&quot;time_plt_stbl&quot;,&quot;plt_stb_7&quot;, &quot;los&quot; ,&quot;outcome1&quot;,&quot;mort&quot;,&quot;sbc&quot;,&quot;neutrophil&quot;,&quot;culture&quot;,&quot;hb&quot;,&quot;hct&quot;,&quot;plt&quot;,&quot;ldh&quot;,&quot;cr&quot;,&quot;pt&quot;,&quot;ptt&quot;,&quot;fibr&quot;,&quot;ddimer&quot;,&quot;protein&quot;,&quot;alb&quot;,&quot;tbili&quot;,&quot;ibili&quot;,&quot;trop&quot;,&quot;inhib&quot;, &quot;a13igg&quot;,&quot;hnp&quot;,&quot;histone&quot;,&quot;pai&quot;,&quot;vwfag&quot;,&quot;vwfcba&quot;,&quot;activevwf&quot;,&quot;vwfratio&quot;,&quot;ic3b&quot;,&quot;c59&quot;,&quot;c4d&quot;,&quot;bb&quot;,&quot;vincristine&quot;,&quot;cyclophosphamide&quot;,&quot;rituxan&quot;,&quot;eculizumab&quot;,&quot;bortezomib&quot;)
+
+# change variable type (i.e. from character to numeric and etc)
+ttpselected &lt;- ttpselected %&gt;%
+  # change certain variables
+  mutate_at(., .vars = c(&quot;time_plt_stbl&quot;, &quot;ptt&quot;,&quot;protein&quot;, &quot;alb&quot;, &quot;trop&quot;, &quot;inhib&quot;, &quot;rituxan&quot;, &quot;ddimer&quot;,&quot;sbc&quot;,&quot;neutrophil&quot;, &quot;outcome1&quot;), .funs=as.numeric ) %&gt;%
+  # Mutate at variables
+  mutate_at(., .vars = c(&quot;sex&quot;,&quot;race&quot;,&quot;btype&quot;,&quot;cmb_cns&quot;,&quot;cmb_abd&quot;,&quot;cmb_chst&quot;,&quot;disease&quot;,&quot;htn&quot;,&quot;dm&quot;,&quot;preg&quot;,&quot;neoplasia&quot;,&quot;hiv&quot;,&quot;hsv&quot;,&quot;hcv&quot;,&quot;sle&quot;,&quot;transplant&quot;,&quot;smoking&quot;,&quot;rec_drug&quot;,&quot;outcome1&quot;,&quot;mort&quot;,&quot;culture&quot;, &quot;vincristine&quot;,&quot;cyclophosphamide&quot;,&quot;rituxan&quot;,&quot;eculizumab&quot;,&quot;bortezomib&quot;), .funs = as.character) %&gt;%
+  # create outcome2 based on whether or not outcome 1 is &gt; 0
+  mutate(outcome2 = as.character(ifelse(outcome1 &gt; 0, 1, 0))) %&gt;%
+  # to add survival interpretation
+  mutate(time = ifelse(is.na(time_plt_stbl), los, time_plt_stbl),
+         status = ifelse(!is.na(time_plt_stbl), 1, 0))</code></pre>
+<pre><code>Warning in evalq(as.numeric(time_plt_stbl), &lt;environment&gt;): NAs introduced
+by coercion</code></pre>
+<pre><code>Warning in evalq(as.numeric(alb), &lt;environment&gt;): NAs introduced by
+coercion</code></pre>
+<pre><code>Warning in evalq(as.numeric(inhib), &lt;environment&gt;): NAs introduced by
+coercion</code></pre>
+<p>Although not standard practice, we’re going to create a variable that houses all categorical analogs of the previous data (which has biomarkers measured as continuous variables).</p>
+<pre class="r"><code># To create data for categorical variables...
+ttpselectedcat &lt;- ttprawdat %&gt;%
+  # exclude patients with value of 2nd column as 1 
+  filter(`TPE( 1), plasma (P) and platelet (PP) prior to sample collection` != 1) %&gt;%
+  # rows 93 to 102 are duplicate values so for now exclude those people
+  filter(`Serial #` &lt; 92) %&gt;%
+  # select variables to use
+  dplyr::select(Age, `Sex ( F=1, M=0)`, `Race (W/AA)`, `ABO type`, `CNS Sign/Symps (1/0)`, `Abd pain (1/0)`, `Chest pain (1/0)`, `Disease 1`, HTN, DM, Preg, Neoplasia, HIV, HSV, HCV, SLE, Transplant, Smoking, `Rec Drugs`, `Time to plt stabilization`, pltstab7, LOSthis, outcome1, mort, wbc, Neutrophil, culture, hb, hct, plt, ldh, cr, pt, ptt, fibr, ddimer, protein, alb, tbili, ibili, `Low Haptoglobin (1/0)`, `Trop (nml &lt;0.04; nml = 1; high = 2`, `HNP Hi =1; Low =2 (Range 1.8-13.7)`, `histone (hi=1; low=2; range 0.15-6.912)`, `PAI (Hi=1; low = 2) Range 53.3-2160`, `Vwf Ag (%?) Hi=1; low = 2 range 59-273.5`, `Vwf CBA (%?) Hi=1; low = 2 range (45.95-286)`, `Active VwF Hi=1; low = 2 range (44.21-187.9)`, `Vwf Ratio Hi=1; low = 2 range (0.55-2.94)`, `ic3b Hi=1; low = 2 range (6.06-15.7)`, `C5-9 Hi=1; low = 2 range (0.2-2.7)`, `C4d Hi=1; low = 2 range (1.4-4.1)`, `Bb Hi=1; low = 2 range (0.8-1.1)`, vincristineTHIS, CyclophosphamideTHIS, `rituxan this`, `eculizumab this`, `bortezomib-this`) 
+
+
+colnames(ttpselectedcat) &lt;- c(&quot;age&quot;,&quot;sex&quot;,&quot;race&quot;,&quot;btype&quot;,&quot;cmb_cns&quot;,&quot;cmb_abd&quot;,&quot;cmb_chst&quot;,&quot;disease&quot;,&quot;htn&quot;,&quot;dm&quot;,&quot;preg&quot;,&quot;neoplasia&quot;,&quot;hiv&quot;,&quot;hsv&quot;,&quot;hcv&quot;,&quot;sle&quot;,&quot;transplant&quot;,&quot;smoking&quot;,&quot;rec_drug&quot;,&quot;time_plt_stbl&quot;,&quot;plt_stb_7&quot;,&quot;los&quot;, &quot;outcome1&quot;,&quot;mort&quot;,&quot;sbc&quot;,&quot;neutrophil&quot;,&quot;culture&quot;,&quot;hb&quot;,&quot;hct&quot;,&quot;plt&quot;,&quot;ldh&quot;,&quot;cr&quot;,&quot;pt&quot;,&quot;ptt&quot;,&quot;fibr&quot;,&quot;ddimer&quot;,&quot;protein&quot;,&quot;alb&quot;,&quot;tbili&quot;,&quot;ibili&quot;,&quot;trop&quot;,&quot;inhib&quot;,&quot;hnp&quot;,&quot;histone&quot;,&quot;pai&quot;,&quot;vwfag&quot;,&quot;vwfcba&quot;,&quot;activevwf&quot;,&quot;vwfratio&quot;,&quot;ic3b&quot;,&quot;c59&quot;,&quot;c4d&quot;,&quot;bb&quot;,&quot;vincristine&quot;,&quot;cyclophosphamide&quot;,&quot;rituxan&quot;,&quot;eculizumab&quot;,&quot;bortezomib&quot;)
+
+# change variable type (i.e. from character to numeric and etc)
+ttpselectedcat &lt;- ttpselectedcat %&gt;%
+  # change certain variables
+  mutate_at(., .vars = c(&quot;time_plt_stbl&quot;, &quot;ptt&quot;,&quot;protein&quot;, &quot;alb&quot;, &quot;inhib&quot;, &quot;rituxan&quot;, &quot;ddimer&quot;,&quot;sbc&quot;,&quot;neutrophil&quot;, &quot;outcome1&quot;), .funs=as.numeric )  %&gt;%
+  # create outcome2 based on whether or not outcome 1 is &gt; 0
+  mutate(outcome2 = as.character(ifelse(outcome1 &gt; 0, 1, 0))) %&gt;%
+  mutate_at(., .vars = c(&quot;trop&quot;,&quot;hnp&quot;,&quot;histone&quot;,&quot;pai&quot;,&quot;vwfag&quot;,&quot;vwfcba&quot;,&quot;activevwf&quot;,&quot;vwfratio&quot;,&quot;ic3b&quot;,&quot;c59&quot;,&quot;c4d&quot;,&quot;bb&quot;),
+            .funs = funs(ifelse(. == 2, 0, ifelse(. == 0, 1, 2)))) %&gt;%
+  # Mutate at variables
+  mutate_at(., .vars = c(&quot;trop&quot;,&quot;hnp&quot;,&quot;histone&quot;,&quot;pai&quot;,&quot;vwfag&quot;,&quot;vwfcba&quot;,&quot;activevwf&quot;,&quot;vwfratio&quot;,&quot;ic3b&quot;,&quot;c59&quot;,&quot;c4d&quot;,&quot;bb&quot;), .funs = as.character)%&gt;%
+  # to add survival interpretation
+  mutate(time = ifelse(is.na(time_plt_stbl), los, time_plt_stbl),
+         status = ifelse(!is.na(time_plt_stbl), 1, 0))</code></pre>
+<pre><code>Warning in evalq(as.numeric(time_plt_stbl), &lt;environment&gt;): NAs introduced
+by coercion</code></pre>
+<pre><code>Warning in evalq(as.numeric(alb), &lt;environment&gt;): NAs introduced by
+coercion</code></pre>
+</div>
+<div id="data-explore" class="section level2">
+<h2>Data Explore</h2>
+<p>Now we can do some data exploring using the <code>DataExplorer</code> package.</p>
+<pre class="r"><code>library(DataExplorer)
+DataExplorer::plot_str(ttpselected)</code></pre>
+<p>We can see that we have some continuous and categorical variables.</p>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<!-- Insert the session information into the document -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.2 (2017-09-28)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 17.10
+
+Matrix products: default
+BLAS: /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] DataExplorer_0.5.0 bindrcpp_0.2       dplyr_0.7.4       
+[4] readxl_1.0.0      
+
+loaded via a namespace (and not attached):
+ [1] igraph_1.1.2        Rcpp_0.12.15        knitr_1.20         
+ [4] bindr_0.1           magrittr_1.5        munsell_0.4.3      
+ [7] colorspace_1.3-2    R6_2.2.2            rlang_0.1.6.9003   
+[10] plyr_1.8.4          stringr_1.3.0       networkD3_0.4      
+[13] tools_3.4.2         grid_3.4.2          gtable_0.2.0       
+[16] data.table_1.10.4-3 git2r_0.21.0        htmltools_0.3.6    
+[19] lazyeval_0.2.1      yaml_2.1.18         rprojroot_1.3-2    
+[22] digest_0.6.15       assertthat_0.2.0    tibble_1.4.2       
+[25] gridExtra_2.3       ggplot2_2.2.1       htmlwidgets_1.0    
+[28] glue_1.2.0          evaluate_0.10.1     rmarkdown_1.9      
+[31] stringi_1.1.6       compiler_3.4.2      pillar_1.1.0       
+[34] cellranger_1.1.0    scales_0.5.0        backports_1.1.2    
+[37] jsonlite_1.5        pkgconfig_2.0.1    </code></pre>
+</div>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+    This <a href="http://rmarkdown.rstudio.com">R Markdown</a> site was created with <a href="https://github.com/jdblischak/workflowr">workflowr</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
