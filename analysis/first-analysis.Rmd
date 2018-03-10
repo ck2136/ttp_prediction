@@ -115,7 +115,8 @@ Now we can do some data exploring using the `DataExplorer` package.
 
 ```{r plot_data}
 library(DataExplorer)
-DataExplorer::plot_str(ttpselected)
+graphics::barplot(ttpselected$age)
+#DataExplorer::plot_str(ttpselected)
 ```
 
 We can see that we have some continuous and categorical variables.
