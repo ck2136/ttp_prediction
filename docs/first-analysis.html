@@ -341,7 +341,7 @@ shared across the workflowr files. -->
 <p><strong>Last updated:</strong> 2018-03-09</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> 3bc8f83</p>
+<p><strong>Code version:</strong> 5b36f9d</p>
 <!-- Add your analysis here -->
 <div id="exploratory-analysis" class="section level1">
 <h1>Exploratory Analysis</h1>
@@ -432,7 +432,9 @@ coercion</code></pre>
 <h2>Data Explore</h2>
 <p>Now we can do some data exploring using the <code>DataExplorer</code> package.</p>
 <pre class="r"><code>library(DataExplorer)
-DataExplorer::plot_str(ttpselected)</code></pre>
+graphics::barplot(ttpselected$age)</code></pre>
+<p><img src="figure/first-analysis.Rmd/plot_data-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#DataExplorer::plot_str(ttpselected)</code></pre>
 <p>We can see that we have some continuous and categorical variables.</p>
 </div>
 <div id="session-information" class="section level2">
@@ -475,7 +477,7 @@ loaded via a namespace (and not attached):
 [28] glue_1.2.0          evaluate_0.10.1     rmarkdown_1.9      
 [31] stringi_1.1.6       compiler_3.4.2      pillar_1.1.0       
 [34] cellranger_1.1.0    scales_0.5.0        backports_1.1.2    
-[37] jsonlite_1.5        pkgconfig_2.0.1    </code></pre>
+[37] pkgconfig_2.0.1    </code></pre>
 </div>
 </div>
 
