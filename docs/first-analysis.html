@@ -341,7 +341,7 @@ shared across the workflowr files. -->
 <p><strong>Last updated:</strong> 2018-03-09</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> 5b36f9d</p>
+<p><strong>Code version:</strong> 9edf62c</p>
 <!-- Add your analysis here -->
 <div id="exploratory-analysis" class="section level1">
 <h1>Exploratory Analysis</h1>
@@ -431,8 +431,7 @@ coercion</code></pre>
 <div id="data-explore" class="section level2">
 <h2>Data Explore</h2>
 <p>Now we can do some data exploring using the <code>DataExplorer</code> package.</p>
-<pre class="r"><code>library(DataExplorer)
-graphics::barplot(ttpselected$age)</code></pre>
+<pre class="r"><code>graphics::barplot(ttpselected$age)</code></pre>
 <p><img src="figure/first-analysis.Rmd/plot_data-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#DataExplorer::plot_str(ttpselected)</code></pre>
 <p>We can see that we have some continuous and categorical variables.</p>
@@ -461,23 +460,15 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] DataExplorer_0.5.0 bindrcpp_0.2       dplyr_0.7.4       
-[4] readxl_1.0.0      
+[1] bindrcpp_0.2 dplyr_0.7.4  readxl_1.0.0
 
 loaded via a namespace (and not attached):
- [1] igraph_1.1.2        Rcpp_0.12.15        knitr_1.20         
- [4] bindr_0.1           magrittr_1.5        munsell_0.4.3      
- [7] colorspace_1.3-2    R6_2.2.2            rlang_0.1.6.9003   
-[10] plyr_1.8.4          stringr_1.3.0       networkD3_0.4      
-[13] tools_3.4.2         grid_3.4.2          gtable_0.2.0       
-[16] data.table_1.10.4-3 git2r_0.21.0        htmltools_0.3.6    
-[19] lazyeval_0.2.1      yaml_2.1.18         rprojroot_1.3-2    
-[22] digest_0.6.15       assertthat_0.2.0    tibble_1.4.2       
-[25] gridExtra_2.3       ggplot2_2.2.1       htmlwidgets_1.0    
-[28] glue_1.2.0          evaluate_0.10.1     rmarkdown_1.9      
-[31] stringi_1.1.6       compiler_3.4.2      pillar_1.1.0       
-[34] cellranger_1.1.0    scales_0.5.0        backports_1.1.2    
-[37] pkgconfig_2.0.1    </code></pre>
+ [1] Rcpp_0.12.15     assertthat_0.2.0 digest_0.6.15    rprojroot_1.3-2 
+ [5] R6_2.2.2         cellranger_1.1.0 backports_1.1.2  git2r_0.21.0    
+ [9] magrittr_1.5     evaluate_0.10.1  pillar_1.1.0     rlang_0.1.6.9003
+[13] stringi_1.1.6    rmarkdown_1.9    tools_3.4.2      stringr_1.3.0   
+[17] glue_1.2.0       yaml_2.1.18      compiler_3.4.2   pkgconfig_2.0.1 
+[21] htmltools_0.3.6  bindr_0.1        knitr_1.20       tibble_1.4.2    </code></pre>
 </div>
 </div>
 
