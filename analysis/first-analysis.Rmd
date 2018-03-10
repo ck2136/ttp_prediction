@@ -114,7 +114,6 @@ ttpselectedcat <- ttpselectedcat %>%
 Now we can do some data exploring using the `DataExplorer` package.
 
 ```{r plot_data}
-library(DataExplorer)
 graphics::barplot(ttpselected$age)
 #DataExplorer::plot_str(ttpselected)
 ```
