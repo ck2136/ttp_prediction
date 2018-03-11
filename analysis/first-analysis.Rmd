@@ -115,6 +115,7 @@ Now we can do some data exploring using the `DataExplorer` package.
 
 ```{r plot_data}
 graphics::barplot(ttpselected$age)
+graphics::barplot(ttpselected$pai)
 #DataExplorer::plot_str(ttpselected)
 ```
 
