@@ -329,7 +329,7 @@ div.section {
 
 <h1 class="title toc-ignore">Exploratory Analysis</h1>
 <h4 class="author"><em>Chong H Kim</em></h4>
-<h4 class="date"><em>09 March, 2018</em></h4>
+<h4 class="date"><em>10 March, 2018</em></h4>
 
 </div>
 
@@ -338,10 +338,10 @@ div.section {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2018-03-09</p>
+<p><strong>Last updated:</strong> 2018-03-10</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> 9edf62c</p>
+<p><strong>Code version:</strong> 715e22e</p>
 <!-- Add your analysis here -->
 <div id="exploratory-analysis" class="section level1">
 <h1>Exploratory Analysis</h1>
@@ -433,6 +433,8 @@ coercion</code></pre>
 <p>Now we can do some data exploring using the <code>DataExplorer</code> package.</p>
 <pre class="r"><code>graphics::barplot(ttpselected$age)</code></pre>
 <p><img src="figure/first-analysis.Rmd/plot_data-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>graphics::barplot(ttpselected$pai)</code></pre>
+<p><img src="figure/first-analysis.Rmd/plot_data-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#DataExplorer::plot_str(ttpselected)</code></pre>
 <p>We can see that we have some continuous and categorical variables.</p>
 </div>
